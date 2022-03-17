@@ -1,8 +1,8 @@
-name: 'Wait'
-description: 'Wait a designated number of milliseconds'
+name: 'Setup MacPorts'
+description: 'Setup MacPorts and add it to PATH'
 inputs:
-  milliseconds:  # id of input
-    description: 'number of milliseconds to wait'
+  macports-version:  # id of input
+    description: 'The MacPorts version to install.'
     required: true
     default: '1000'
 outputs:

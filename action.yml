@@ -4,7 +4,7 @@ inputs:
   macports-version:  # id of input
     description: 'The MacPorts version to install.'
     required: true
-    default: '1000'
+    default: ''
 outputs:
   time: # output will be available to future steps
     description: 'The current time after waiting'

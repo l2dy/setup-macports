@@ -26,7 +26,10 @@ async function run() {
       throw new Error(`platform is not darwin`);
     }
 
-    const version = core.getInput('macports-version', { required: true });
+    let version = core.getInput('macports-version');
+    if (version === '') {
+      version = await mputil.getLatestVersion();
+    }
     core.info(`Downloading MacPorts ${version}...`);
     const pkgURL = mputil.getPkgURL(os.version(), version);
     const pkgPath = await tc.downloadTool(pkgURL);

@@ -16,10 +16,18 @@ jobs:
     - run: npm test
 
   # test action works running from the graph
-  test:
+  test-latest:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ./
+    - run: port version
+
+  test-specific:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
     - uses: ./
       with:
         macports-version: "2.7.2"
+    - run: port version

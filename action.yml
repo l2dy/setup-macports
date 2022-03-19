@@ -3,8 +3,8 @@ description: 'Setup MacPorts and add it to PATH'
 inputs:
   macports-version:  # id of input
     description: 'The MacPorts version to install.'
-    required: true
-    default: '1000'
+    required: false
+    default: ''
 outputs:
   time: # output will be available to future steps
     description: 'The current time after waiting'

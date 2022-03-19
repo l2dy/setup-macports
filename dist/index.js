@@ -2,20 +2,45 @@ require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
 /***/ 6203:
-/***/ ((module) => {
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+const httpm = __nccwpck_require__(9925);
 
 const osMap = {
   "19": "10.15-Catalina",
   "20": "11-BigSur",
 }
 
-let getPkgURL = function (osVersion, pkgVersion) {
+function regexpCapture(regexp, s) {
+  let match = regexp.exec(s);
+  if (match === null) {
+    return ""
+  }
+  return match[1];
+}
+
+let getLatestVersion = async function() {
+  const versionRE = /v([0-9.]+)$/;
+  const RELEASE_URL = 'https://raw.githubusercontent.com/macports/macports-base/master/config/RELEASE_URL';
+  const http = new httpm.HttpClient();
+  let res = await http.get(RELEASE_URL);
+  if (res.message.statusCode !== 200) {
+    throw new Error(`fetch RELEASE_URL failed, status ${res.message.statusCode}`);
+  }
+  let body = await res.readBody();
+  let version = regexpCapture(versionRE, body.trim());
+  if (version === "") {
+    throw new Error(`RELEASE_URL match failed: ${body}`);
+  }
+  return version;
+}
+
+let getPkgURL = function(osVersion, pkgVersion) {
   const osMajorRE = /^Darwin Kernel Version (\d+)\./;
-  const osMatch = osMajorRE.exec(osVersion);
-  if (osMatch === null) {
+  const osMajor = regexpCapture(osMajorRE, osVersion);
+  if (osMajor === "") {
     throw new Error(`unrecognized OS version: ${osVersion}`);
   }
-  const osMajor = osMatch[1];
   const osStr = osMap[osMajor];
   if (osStr === undefined) {
     throw new Error(`unsupported OS version: ${osVersion}`);
@@ -23,7 +48,7 @@ let getPkgURL = function (osVersion, pkgVersion) {
   return `https://github.com/macports/macports-base/releases/download/v${pkgVersion}/MacPorts-${pkgVersion}-${osStr}.pkg`;
 }
 
-module.exports.getPkgURL = getPkgURL;
+module.exports = { getPkgURL, getLatestVersion };
 
 
 /***/ }),
@@ -10207,7 +10232,10 @@ async function run() {
       throw new Error(`platform is not darwin`);
     }
 
-    const version = core.getInput('macports-version', { required: true });
+    let version = core.getInput('macports-version');
+    if (version === '') {
+      version = await mputil.getLatestVersion();
+    }
     core.info(`Downloading MacPorts ${version}...`);
     const pkgURL = mputil.getPkgURL(os.version(), version);
     const pkgPath = await tc.downloadTool(pkgURL);

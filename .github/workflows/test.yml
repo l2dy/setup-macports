@@ -11,7 +11,7 @@ jobs:
   units:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: npm ci
     - run: npm test
 
@@ -19,14 +19,14 @@ jobs:
   test-latest:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - uses: ./
     - run: port version
 
   test-specific:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - uses: ./
       with:
         macports-version: "2.7.2"

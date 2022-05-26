@@ -33,7 +33,7 @@
     "tmp-promise": "^3.0.3"
   },
   "devDependencies": {
-    "@vercel/ncc": "^0.33.3",
+    "@vercel/ncc": "^0.34.0",
     "eslint": "^8.0.0",
     "jest": "^28.0.2"
   }
